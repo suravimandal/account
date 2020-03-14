@@ -1,11 +1,19 @@
 package backend.service;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import backend.dto.UserDTO;
 
 
 public interface UserService {
 
-	public void create(UserDTO userDTO);
+	public Long create(UserDTO userDTO);
+	
+	public void update(UserDTO userDTO);
+	
+	public UserDTO getById(Long userId);
+	
+	public List<UserDTO> findAll();
+	
+	public void deleteById(Long userId);
 }
