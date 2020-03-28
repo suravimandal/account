@@ -4,10 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.stereotype.Repository;
 
-import backend.model.User;
+import backend.model.Token;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long>, QueryByExampleExecutor<User> {
-	
+public interface TokenRepository extends CrudRepository<Token, Long> , QueryByExampleExecutor<Token> {
 
 }
