@@ -1,12 +1,14 @@
 package backend.model;
 
-import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -18,29 +20,26 @@ import lombok.Setter;
 @Setter
 @Table(name = "users")
 @NoArgsConstructor
-public class User {
+public class User extends BaseModel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private String address;
 	private String password;
 	private String email;
+
 	
-	@Column(name="registered_dt")
-	private ZonedDateTime registeredDate;
+	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+	private Set <Address> addresses = new HashSet<>();
 	
-	@Column(name="created_by")
-	private String createdBy;
-	
-	@Column(name="created_dt")
-	private ZonedDateTime createdDate;
-	
-	@Column(name="last_updated_by")
-	private String lastUpdatedBy;
-	
-	@Column(name="last_updated_dt")
-	private ZonedDateTime lastUpdatedDate;
+	public void addAddress(Address address) {
+		this.addresses.add(address);
+		address.setUser(this);	
+	}
 
 }

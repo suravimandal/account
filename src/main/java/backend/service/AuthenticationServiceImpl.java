@@ -51,7 +51,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		Token token = new Token();
 		token.setUserId(user.getId());
 		token.setAuthorization(generateAccessToken());
-		token.setCreatedDate(ZonedDateTime.now());
 		tokenRepository.save(token);
 
 		TokenDTO tokenDTO = new TokenDTO();

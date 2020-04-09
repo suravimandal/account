@@ -11,13 +11,8 @@ public class UserDTO {
 
 	private Long id;
 	private String name;
-	private String address;
 	private String password;
 	private String email;
-	private ZonedDateTime registeredDate;
-	private String createdBy;
-	private ZonedDateTime createdDate;
-	private String lastUpdatedBy;
-	private ZonedDateTime lastUpdatedDate;
-	
+	private ZonedDateTime createdAt;
+	private ZonedDateTime updatedAt;
 }
