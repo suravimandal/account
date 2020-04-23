@@ -31,6 +31,11 @@ class UserServiceTest {
 		userDTO.setEmail("test@test.nus.edu.sg");
 		userDTO.setName("Test 1");
 		userDTO.setPassword("********");
+		
+		User user = new User();
+		user.setId(1l);
+		when(userRepository.save(any())).thenReturn(user);
+		
 		userService.create(userDTO);
 		
 		verify(userRepository, times(1)).save(any(User.class));
@@ -42,6 +47,7 @@ class UserServiceTest {
 		userDTO.setEmail("test@test.nus.edu.sg");
 		userDTO.setName("Test 1");
 		userDTO.setPassword("********");
+		
 		userService.update(userDTO);
 		
 		verify(userRepository, times(1)).save(any(User.class));
