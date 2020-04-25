@@ -105,13 +105,18 @@ class UserServiceTest {
 	
 	@Test
 	void authenticateUserTest() {
+		String plain_password = "password";
+		String hashPassword = passwordTokenService.encodePassword(plain_password);
+		
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword));
+		
 		User user = new User();
-		user.setPassword("$2a$10$YI3KtJ6Y4gSn45kXmaH5zeTU3I4y9vsbdtU1GoWyuA6XOi0j5THR.");
+		user.setPassword(hashPassword);
 		
 		when(userRepository.findOne(any())).thenReturn(Optional.of(user));
 		when(tokenRepository.save(any())).thenReturn(any(Token.class));
 		
-		TokenDTO tokenDTO = authenticationService.authenticate("test1@nus.edu.sg", "password");
+		TokenDTO tokenDTO = authenticationService.authenticate("test1@nus.edu.sg", plain_password);
 		assertNotNull(tokenDTO);
 	}
 }
