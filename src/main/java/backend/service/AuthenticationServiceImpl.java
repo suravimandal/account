@@ -1,11 +1,6 @@
 package backend.service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.ZonedDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +19,9 @@ import backend.repository.UserRepository;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 	
-	private final static char[] hexArray = "0123456789abcdef".toCharArray();
-
-	
+	@Autowired
+	private PasswordTokenService passwordService;
+		
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -37,7 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public TokenDTO authenticate(String email, String password) {
 		User searchUser = new User();
 		searchUser.setEmail(email);
-		searchUser.setPassword(password);
 		
 		Example<User> userExample = Example.of(searchUser);
 		Optional<User> optional = userRepository.findOne(userExample);
@@ -47,10 +41,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 		
 		User user = optional.get();
+		
+		if (passwordService.checkPassword(password, user.getPassword())) {
+			throw new InvalidUsernameOrPasswordException("Invalid username or password.");
+		}
 
 		Token token = new Token();
 		token.setUserId(user.getId());
-		token.setAuthorization(generateAccessToken());
+		token.setAuthorization(passwordService.generateAccessToken());
 		tokenRepository.save(token);
 
 		TokenDTO tokenDTO = new TokenDTO();
@@ -83,32 +81,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 		return userDTO;
 	}
-	
-	private static String generateAccessToken() {
-		MessageDigest salt;
-		try {
-			salt = MessageDigest.getInstance("SHA-256");
-			salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
-			String digest = bytesToHex(salt.digest());
-			
-			return digest;
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
 
 
 }

@@ -1,5 +1,7 @@
 package backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,16 +13,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
+import backend.WebConfig;
 import backend.dto.UserDTO;
 import backend.model.User;
 import backend.repository.UserRepository;
 
-@SpringBootTest(classes = UserServiceImpl.class)
+@SpringBootTest(classes = {UserServiceImpl.class, PasswordTokenServiceImpl.class})
+@Import(WebConfig.class)
 class UserServiceTest {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PasswordTokenService passwordTokenService;
 	
 	@MockBean
 	private UserRepository userRepository;
@@ -74,6 +82,16 @@ class UserServiceTest {
 	void findAllUserTest() {
 		userService.findAll();
 		verify(userRepository, times(1)).findAll();
+	}
+	
+	@Test
+	void passwordEqualityTest() {
+		String plain_password = "testpassword";
+		String hashPassword1 = passwordTokenService.encodePassword(plain_password);
+		String hashPassword2 = passwordTokenService.encodePassword(plain_password);
+		
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword1));
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword2));
 	}
 	
 }
