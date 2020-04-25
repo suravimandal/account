@@ -21,7 +21,11 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private PasswordTokenService passwordService;
+	
 	public Long create(UserDTO userDTO) {
+		passwordService.encodePassword(userDTO);
 		User user = new User();
 		BeanUtils.copyProperties(userDTO, user);
 		userRepository.save(user);
@@ -31,6 +35,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void update(UserDTO userDTO) {
+		passwordService.encodePassword(userDTO);
 		User user = new User();
 		BeanUtils.copyProperties(userDTO, user);
 		userRepository.save(user);
@@ -72,4 +77,5 @@ public class UserServiceImpl implements UserService{
 	public void deleteById(Long userId) {
 		userRepository.deleteById(userId);
 	}
+
 }

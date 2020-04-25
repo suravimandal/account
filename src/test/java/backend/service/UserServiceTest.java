@@ -11,12 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
+import backend.WebConfig;
 import backend.dto.UserDTO;
 import backend.model.User;
 import backend.repository.UserRepository;
 
-@SpringBootTest(classes = UserServiceImpl.class)
+@SpringBootTest(classes = {UserServiceImpl.class, PasswordTokenServiceImpl.class})
+@Import(WebConfig.class)
 class UserServiceTest {
 
 	@Autowired
