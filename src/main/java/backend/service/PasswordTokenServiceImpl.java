@@ -31,6 +31,11 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
 	}
 	
 	@Override
+	public boolean checkPassword(String password, String hashedPassword) {
+		return passwordEncoder.matches(password, hashedPassword);
+	} 
+	
+	@Override
 	public String generateAccessToken() {
 		MessageDigest salt;
 		try {

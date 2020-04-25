@@ -1,5 +1,7 @@
 package backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,6 +26,9 @@ class UserServiceTest {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PasswordTokenService passwordTokenService;
 	
 	@MockBean
 	private UserRepository userRepository;
@@ -77,6 +82,16 @@ class UserServiceTest {
 	void findAllUserTest() {
 		userService.findAll();
 		verify(userRepository, times(1)).findAll();
+	}
+	
+	@Test
+	void passwordEqualityTest() {
+		String plain_password = "testpassword";
+		String hashPassword1 = passwordTokenService.encodePassword(plain_password);
+		String hashPassword2 = passwordTokenService.encodePassword(plain_password);
+		
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword1));
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword2));
 	}
 	
 }

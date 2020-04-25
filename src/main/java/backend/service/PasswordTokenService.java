@@ -10,4 +10,6 @@ public interface PasswordTokenService {
 	
 	public String generateAccessToken();
 
+	public boolean checkPassword(String password, String hashedPassword);
+
 }

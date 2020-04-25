@@ -32,7 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public TokenDTO authenticate(String email, String password) {
 		User searchUser = new User();
 		searchUser.setEmail(email);
-		searchUser.setPassword(passwordService.encodePassword(password));
 		
 		Example<User> userExample = Example.of(searchUser);
 		Optional<User> optional = userRepository.findOne(userExample);
@@ -42,6 +41,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		}
 		
 		User user = optional.get();
+		
+		if (passwordService.checkPassword(password, user.getPassword())) {
+			throw new InvalidUsernameOrPasswordException("Invalid username or password.");
+		}
 
 		Token token = new Token();
 		token.setUserId(user.getId());
