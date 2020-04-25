@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		
 		User user = optional.get();
 		
-		if (passwordService.checkPassword(password, user.getPassword())) {
+		if (!passwordService.checkPassword(password, user.getPassword())) {
 			throw new InvalidUsernameOrPasswordException("Invalid username or password.");
 		}
 

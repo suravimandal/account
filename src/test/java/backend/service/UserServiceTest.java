@@ -1,5 +1,6 @@
 package backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -15,11 +16,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import backend.WebConfig;
+import backend.dto.TokenDTO;
 import backend.dto.UserDTO;
+import backend.model.Token;
 import backend.model.User;
+import backend.repository.TokenRepository;
 import backend.repository.UserRepository;
 
-@SpringBootTest(classes = {UserServiceImpl.class, PasswordTokenServiceImpl.class})
+@SpringBootTest(classes = {UserServiceImpl.class, PasswordTokenServiceImpl.class, AuthenticationServiceImpl.class})
 @Import(WebConfig.class)
 class UserServiceTest {
 
@@ -29,8 +33,14 @@ class UserServiceTest {
 	@Autowired
 	private PasswordTokenService passwordTokenService;
 	
+	@Autowired
+	private AuthenticationService authenticationService;
+	
 	@MockBean
 	private UserRepository userRepository;
+	
+	@MockBean
+	private TokenRepository tokenRepository;
 	
 	@Test
 	void addUserTest() {
@@ -85,7 +95,7 @@ class UserServiceTest {
 	
 	@Test
 	void passwordEqualityTest() {
-		String plain_password = "testpassword";
+		String plain_password = "password";
 		String hashPassword1 = passwordTokenService.encodePassword(plain_password);
 		String hashPassword2 = passwordTokenService.encodePassword(plain_password);
 		
@@ -93,4 +103,20 @@ class UserServiceTest {
 		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword2));
 	}
 	
+	@Test
+	void authenticateUserTest() {
+		String plain_password = "password";
+		String hashPassword = passwordTokenService.encodePassword(plain_password);
+		
+		assertTrue(passwordTokenService.checkPassword(plain_password, hashPassword));
+		
+		User user = new User();
+		user.setPassword(hashPassword);
+		
+		when(userRepository.findOne(any())).thenReturn(Optional.of(user));
+		when(tokenRepository.save(any())).thenReturn(any(Token.class));
+		
+		TokenDTO tokenDTO = authenticationService.authenticate("test1@nus.edu.sg", plain_password);
+		assertNotNull(tokenDTO);
+	}
 }
