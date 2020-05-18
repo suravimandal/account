@@ -52,19 +52,36 @@ public class AddressServiceImpl implements AddressService{
 			BeanUtils.copyProperties(e, dto);
 			return dto;
 		})
-		.collect(Collectors.toList());	
+		.collect(Collectors.toList());
+	}
+
+	@Override
+	public void update(CreateAddressDTO addressDTO, long id){
+		Address address = new Address();
+		BeanUtils.copyProperties(addressDTO, address);
+		Optional<User> userOpt = userRepository.findById(addressDTO.getUserId());
+		if(userOpt.isPresent()) {
+			addressRepository.deleteById(id);
+			User user = userOpt.get();
+			//System.out.println(user);
+			address.addUser(user);
+			//System.out.println(address1.getId());
+
+			addressRepository.save(address);
+		}
+
+
 	}
 
 	@Override
 	public void deleteUserAddress(long userId, long addressId) {
-		
 		Optional<Address> optAddress = addressRepository.findById(addressId);
 		if(optAddress.isPresent()) {
 			Address address = optAddress.get();
-			if(address.getUser().getId() != userId) {
+			if(address.getUserId() != userId) {
 				return;
 			}
-			addressRepository.delete(address);
+			addressRepository.deleteById(address.getId());
 		}		
 	}
 	
@@ -73,7 +90,7 @@ public class AddressServiceImpl implements AddressService{
 		User user = new User();
 		user.setId(userId);
 		
-		criteria.setUser(user);
+		criteria.addUser(user);
 		criteria.setIsDeleted(false);
 		
 		Example<Address> exAddress = Example.of(criteria);

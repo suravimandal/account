@@ -41,7 +41,7 @@ public class User extends BaseModel{
 		this.addresses.add(address);
 		address.setUser(this);	
 	}
-
+	public void setId(Long Id){this.id=Id;}
 
 
 	public Long getId() {

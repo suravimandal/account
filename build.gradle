@@ -34,7 +34,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 	compile group: 'com.sun.mail', name: 'smtp', version: '1.6.2'
-	compile group: 'org.krproject', name: 'schedule', version: '0.0.1'
+	//compile group: 'org.krproject', name: 'schedule', version: '0.0.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

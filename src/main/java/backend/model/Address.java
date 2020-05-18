@@ -31,12 +31,25 @@ public class Address extends BaseModel {
 	private String name;
 	
 	private String block;
+
+	private Long phone;
+
+	private String altPhone;
+
+	private String villOrSector;
+
+	private String townOrCity;
 	
 	private String street;
+
 	
-	private String unitNumber;
-	
+	private String landmark;
+
+	private String type;
+
 	private String postalCode;
+
+	private String state;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -46,4 +59,14 @@ public class Address extends BaseModel {
 		this.user = user;
 		this.user.getAddresses().add(this);
 	}
+
+	public long getUserId(){
+		return user.getId();
+	}
+
+	public Long getId(){
+		return id;
+	}
+
+
 }

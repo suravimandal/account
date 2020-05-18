@@ -46,4 +46,7 @@ public abstract class BaseModel implements Serializable{
 	    }
 
 
+    public void setIsDeleted(boolean b){this.isDeleted=b;};
+
+
 }
